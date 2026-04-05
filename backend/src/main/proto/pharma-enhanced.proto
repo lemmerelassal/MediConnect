@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.pharma.grpc";
+option java_outer_classname = "PharmaProto";
+
+package pharma;
+
+// Notification Streaming Service
+service NotificationStreamService {
+  // Server-side streaming for real-time notifications
+  rpc StreamNotifications(NotificationStreamRequest) returns (stream NotificationEvent);
+}
+
+// Analytics Service
+service AnalyticsService {
+  rpc GetShortageAnalytics(AnalyticsRequest) returns (ShortageAnalyticsResponse);
+  rpc GetTenderAnalytics(AnalyticsRequest) returns (TenderAnalyticsResponse);
+  rpc GetCountryAnalytics(CountryAnalyticsRequest) returns (CountryAnalyticsResponse);
+  rpc ExportAnalyticsReport(ExportReportRequest) returns (ExportReportResponse);
+}
+
+// Notification Stream Messages
+message NotificationStreamRequest {
+  int64 user_id = 1;
+  string token = 2;
+}
+
+message NotificationEvent {
+  int64 id = 1;
+  string type = 2;
+  string title = 3;
+  string message = 4;
+  string related_entity_type = 5;
+  int64 related_entity_id = 6;
+  string created_at = 7;
+}
+
+// Analytics Messages
+message AnalyticsRequest {
+  string period = 1; // WEEK, MONTH, QUARTER, YEAR
+  string start_date = 2;
+  string end_date = 3;
+}
+
+message CountryAnalyticsRequest {
+  int64 country_id = 1;
+  string period = 2;
+  string start_date = 3;
+  string end_date = 4;
+}
+
+message ShortageAnalyticsResponse {
+  int32 total_shortages = 1;
+  int32 active_shortages = 2;
+  int32 fulfilled_shortages = 3;
+  double avg_fulfillment_time_hours = 4;
+  map<string, int32> shortages_by_urgency = 5;
+  map<string, int32> shortages_by_country = 6;
+  repeated ShortageTimeSeries time_series = 7;
+  repeated TopMedication top_medications = 8;
+}
+
+message TenderAnalyticsResponse {
+  int32 total_tenders = 1;
+  int32 accepted_tenders = 2;
+  int32 rejected_tenders = 3;
+  double avg_response_time_hours = 4;
+  double avg_tender_value = 5;
+  map<string, int32> tenders_by_status = 6;
+  repeated TenderTimeSeries time_series = 7;
+  repeated TopSupplier top_suppliers = 8;
+}
+
+message CountryAnalyticsResponse {
+  int64 country_id = 1;
+  string country_name = 2;
+  int32 total_shortages_reported = 3;
+  int32 total_tenders_submitted = 4;
+  int32 total_tenders_received = 5;
+  double avg_response_time_hours = 6;
+  double fulfillment_rate = 7;
+  int64 total_value_traded = 8;
+  repeated MonthlyStats monthly_stats = 9;
+}
+
+message ShortageTimeSeries {
+  string date = 1;
+  int32 count = 2;
+  string urgency = 3;
+}
+
+message TenderTimeSeries {
+  string date = 1;
+  int32 count = 2;
+  double avg_value = 3;
+}
+
+message TopMedication {
+  int64 medication_id = 1;
+  string medication_name = 2;
+  int32 shortage_count = 3;
+  int64 total_quantity_needed = 4;
+}
+
+message TopSupplier {
+  int64 country_id = 1;
+  string country_name = 2;
+  int32 tender_count = 3;
+  double total_value = 4;
+  double acceptance_rate = 5;
+}
+
+message MonthlyStats {
+  string month = 1;
+  int32 shortages = 2;
+  int32 tenders_submitted = 3;
+  int32 tenders_received = 4;
+}
+
+message ExportReportRequest {
+  string report_type = 1; // SHORTAGE_SUMMARY, TENDER_SUMMARY, COUNTRY_PERFORMANCE
+  string format = 2; // PDF, EXCEL, CSV
+  string period = 3;
+  string start_date = 4;
+  string end_date = 5;
+  repeated int64 country_ids = 6;
+}
+
+message ExportReportResponse {
+  string file_url = 1;
+  string file_name = 2;
+  int64 file_size = 3;
+  string mime_type = 4;
+}
+
+// Empty message
+message Empty {}

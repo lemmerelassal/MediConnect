@@ -1,0 +1,92 @@
+plugins {
+    id 'java'
+    id 'io.quarkus' version '3.17.0'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    // Quarkus Core
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation 'io.quarkus:quarkus-arc'
+    implementation 'io.quarkus:quarkus-resteasy-reactive-jackson'
+    
+    // Hibernate ORM with Panache
+    implementation 'io.quarkus:quarkus-hibernate-orm-panache'
+    implementation 'io.quarkus:quarkus-hibernate-validator'
+    
+    // PostgreSQL
+    implementation 'io.quarkus:quarkus-jdbc-postgresql'
+    
+    // gRPC
+    implementation 'io.quarkus:quarkus-grpc'
+    
+    // JWT Authentication
+    implementation 'io.quarkus:quarkus-smallrye-jwt'
+    implementation 'io.quarkus:quarkus-smallrye-jwt-build'
+    implementation 'io.quarkus:quarkus-security-jpa'
+    
+    // BCrypt for password hashing
+    implementation 'org.mindrot:jbcrypt:0.4'
+    
+    // Email
+    implementation 'io.quarkus:quarkus-mailer'
+    implementation 'io.quarkus:quarkus-qute'
+    
+    // File Upload/Download
+    implementation 'io.quarkus:quarkus-resteasy-reactive-multipart'
+    
+    // CORS
+    implementation 'io.quarkus:quarkus-resteasy-reactive-cors'
+    
+    // Health & Metrics
+    implementation 'io.quarkus:quarkus-smallrye-health'
+    implementation 'io.quarkus:quarkus-micrometer-registry-prometheus'
+    
+    // OpenAPI/Swagger
+    implementation 'io.quarkus:quarkus-smallrye-openapi'
+    
+    // Scheduler for email queue processing
+    implementation 'io.quarkus:quarkus-scheduler'
+    
+    // WebSocket for real-time updates (alternative to gRPC streaming)
+    implementation 'io.quarkus:quarkus-websockets'
+    
+    // JSON
+    implementation 'io.quarkus:quarkus-jsonb'
+    
+    // Apache POI for Excel export (analytics)
+    implementation 'org.apache.poi:poi-ooxml:5.2.5'
+    
+    // PDF generation (analytics reports)
+    implementation 'com.itextpdf:itext7-core:8.0.2'
+    
+    // Testing
+    testImplementation 'io.quarkus:quarkus-junit5'
+    testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'io.quarkus:quarkus-junit5-mockito'
+}
+
+group 'com.pharma'
+version '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+test {
+    systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-parameters'
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+}
